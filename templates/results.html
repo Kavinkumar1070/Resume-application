@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Result</title>
+  <link rel="stylesheet" href="/templates/styles.css">
+</head>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  #resultPage {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .result-left {
+    flex: 1;
+    padding-right: 20px;
+  }
+  
+  .result-left h3 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .result-left p {
+    font-size: 16px;
+    padding-left: 50px;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  .result-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+  }
+  
+  .exit-btn {
+    background-color: #ff6666;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .exit-btn:hover {
+    background-color: #e55a5a;
+    transform: translateY(-2px);
+  }
+  
+</style>
+<body>
+
+  <div id="resultPage">
+    <div class="result-left">
+      <h3>Analysis Details</h3>
+      <p id="details"></p>
+    </div>
+    <div class="result-right">
+      <div class="circle">
+        <h4 id="score">20</h4>
+      </div>
+      <button class="exit-btn" id="exitBtn">Exit</button>
+    </div>
+  </div>
+
+  <script>
+// Assuming you have an upload button to trigger the process
+document.getElementById('scanResumeBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('resumeUpload');
+  const file = fileInput.files[0];
+
+  if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/process_resume/', {
+          method: 'POST',
+          body: formData,
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          document.getElementById('details').innerText = result.result || result.error;
+          // Redirect to result page with details
+          window.location.href = `/result?details=${encodeURIComponent(data.details)}`;
+      } else {
+          console.error('Error processing the resume.');
+      }
+  } else {
+      alert('Please upload a file.');
+  }
+});
+
+  </script>
+
+  <script src="/templates/scripts.js"></script>
+</body>
+</html>

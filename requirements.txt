@@ -1,0 +1,12 @@
+python-docx
+pdf2image
+docx2pdf
+fastapi 
+uvicorn 
+python-multipart
+python-dotenv
+PyPDF2
+groq
+google-generativeai
+python-multipart
+jinja2

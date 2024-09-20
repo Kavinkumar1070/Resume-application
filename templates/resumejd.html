@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Resume with Job Description</title>
+  <link rel="stylesheet" href="/templates/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Check Resume with Job Description</h1>
+    <div class="upload-container">
+      <input type="file" id="jobResumeUpload" class="upload-btn">
+      <div id="jobResumePreview" class="preview">
+        <div class="preview-content">
+            <!-- Placeholder message when no file is uploaded -->
+            <p class="no-file-message">No file uploaded yet.</p>
+            <!-- Placeholder for the uploaded image or iframe -->
+            <!-- <img src="uploaded-file.jpg" alt="Uploaded File" /> -->
+            <!-- <iframe src="uploaded-file.pdf"></iframe> -->
+          </div>
+      </div>
+    </div>
+    <div class="input-container">
+      <input type="text" id="jobDescriptionInput" placeholder="Enter Job Description" class="input-box">
+      <button class="scan-btn" id="scanJobDescBtn">Scan</button>
+    </div>
+  </div>
+
+  <div id="loadingScreen" class="hidden">
+    <div class="loader">
+      <div id="loadingText"></div>
+      <div class="green-tick hidden" id="tick">✔</div>
+    </div>
+  </div>
+
+  <script src="/templates/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Checker</title>
+  <link rel="stylesheet" href="/templates/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Resume Checker</h1>
+    <div class="upload-container">
+      <input type="file" id="resumeUpload" class="upload-btn">
+      <div id="resumePreview" class="preview"></div>
+      <button class="scan-btn" id="scanResumeBtn">Scan</button>
+    </div>
+  </div>
+
+  <div id="loadingScreen" class="hidden">
+    <div class="loader">
+      <div id="loadingText"></div>
+      <div class="green-tick hidden" id="tick">✔</div>
+    </div>
+  </div>
+
+  <div id="resultContainer" class="hidden">
+    <h2>Scan Result:</h2>
+    <pre id="scanResult"></pre>
+  </div>
+
+  <script>
+    document.getElementById('scanResumeBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('resumeUpload');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('Please upload a resume file first!');
+        return;
+      }
+
+      // Show loading screen
+      document.getElementById('loadingScreen').classList.remove('hidden');
+      document.getElementById('loadingText').textContent = 'Processing resume...';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://localhost:8000/process_resume/', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('scanResult').textContent = JSON.stringify(data.result, null, 2);
+          document.getElementById('loadingText').textContent = 'Resume processed!';
+          document.getElementById('tick').classList.remove('hidden');
+          document.getElementById('resultContainer').classList.remove('hidden');
+        } else {
+          document.getElementById('loadingText').textContent = 'Error processing resume!';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loadingText').textContent = 'Failed to upload resume.';
+      }
+
+      // Hide loading screen after processing
+      setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('hidden');
+      }, 2000);
+    });
+  </script>
+
+  <script src="/templates/scripts.js"></script>
+</body>
+</html>
