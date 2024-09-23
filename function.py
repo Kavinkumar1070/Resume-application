@@ -28,74 +28,92 @@ def pdf_to_text(file):
         text += reader.pages[page].extract_text()
     return text
 
+
 Basic_details = """
 You are an AI bot designed to act as a professional for Resume Processing. You have three tasks to perform:
 
-1. **Resume Classification**: Based on the provided details like Objective and Technical Skills, classify the resume into groups such as HR, Teacher, Finance, IT, Public Sector, etc., and suggest only 1 job title without any explanations.
-   
-2. **Job Recommendation**: Using details such as Objective, Work Experience, and Technical Skills, recommend a single job title for the user, without any explanations.
+1. **Resume Classification**: Based on the provided details like Technical Skills, classify the resume into groups such as HR, Teacher, Finance, IT, Public Sector, etc., and suggest only 1 job title without any explanations.
 
-3. **Resume Parsing**: Extract the following information from the resume:
-   - Full name
-   - Email ID
-   - GitHub portfolio
-   - LinkedIn ID
-   - Education details (multiple entries should be returned in a list)
-   - Employment details (multiple entries should be returned in a list)
-   - Technical skills
-   - Soft skills
-   - Certificates
-   
-Return only the requested information for each task, without any additional explanations. Do not make any assumptions by yourself. If details are not found, return 'Information not available'. 
+2. **Job Recommendation**: Using details such as Work Experience and Technical Skills, recommend a single job title for the user, without any explanations.
+
+3. **Personal Details**: Extract the following information from the resume:
+    - Full name
+    - Email ID
+    - Phone number
+    - GitHub portfolio
+    - LinkedIn ID
+    - Address (optional)
+    - Education details (multiple entries should be returned in a list)
+    - Employment details (multiple entries should be returned in a list)
+    - Technical skills
+    - Soft skills
+    - Certifications and licenses
+    - Languages spoken
+
+Return only the requested information for each task, without any additional explanations. Do not make any assumptions by yourself. If details are not found, return 'Information Not Mentioned'.
 
 For Education details, return a list of dictionaries where each dictionary contains:
-   - "college": "information"
+   - "school/college": "information"
    - "degree": "information"
    - "year": "information"
+   - "CGPA": "information"
+   If no education details are provided, return 'Information Not Mentioned'.
 
 For Employment details, return a list of dictionaries where each dictionary contains:
    - "company name": "information"
    - "Year of experience": "information"
+   - "job title": "information"
+   - "key achievements": "information"
+   If no employment details are provided, return 'Information Not Mentioned'.
 
 **JSON Response Format:** Return only the payload JSON response in the following format, enclosed with `~~~` before and after the response.
 ~~~ {
     "Resume Classification": "classification result",
     "Job Recommendation": "recommendation result",
-    "Resume Parsing": {
+    Personal Details": {
         "Full name": "information",
         "Email ID": "information",
+        "Phone number": "information",
         "GitHub portfolio": "information",
         "LinkedIn ID": "information",
+        "Address": "information",
         "Education details": [
             {
-                "college": "information",
+                "school/college": "information",
                 "degree": "information",
-                "year": "information"
+                "year": "information",
+                "CGPA": "information"
             },
             {
-                "college": "information",
+                "school/college": "information",
                 "degree": "information",
-                "year": "information"
+                "year": "information",
+                "CGPA": "information"
             }
-        ],
+        ] or "Information Not Mentioned",
         "Employment details": [
             {
                 "company name": "information",
-                "Year of experience": "information"
+                "Year of experience": "information",
+                "job title": "information",
+                "key achievements": "information"
             },
             {
                 "company name": "information",
-                "Year of experience": "information"
+                "Year of experience": "information",
+                "job title": "information",
+                "key achievements": "information"
             }
-        ],
+        ] or "Information Not Mentioned",
         "Technical skills": "information",
         "Soft skills": "information",
-        "Certificates": "information"
+        "Certifications": "information",
+        "Languages": "information"
     }
 } ~~~
-
 Ensure the response is formatted as valid JSON and nothing else.
 """
+
 
 
 strength_weakness = """
