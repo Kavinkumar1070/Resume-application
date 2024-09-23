@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume Checker</title>
+  <title>Check Resume with Job Description</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="/templates/styles.css">
   <style>
     * {
       margin: 0;
@@ -42,9 +41,6 @@
     }
 
     .upload-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-bottom: 20px;
     }
 
@@ -74,7 +70,7 @@
       background-color: #45a049;
     }
 
-    .preview-container {
+    .preview {
       margin-top: 20px;
       border: 2px dashed #ccc;
       padding: 20px;
@@ -84,11 +80,10 @@
       height: auto;
     }
 
-    .preview-message {
+    .no-file-message {
       color: #999;
     }
 
-    /* Loader styles */
     #loadingScreen {
       position: fixed;
       top: 0;
@@ -96,112 +91,91 @@
       width: 100%;
       height: 100%;
       background-color: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(5px); /* Blur effect */
-      display: none; /* Initially hidden */
+      backdrop-filter: blur(5px); 
+      display: none; 
       justify-content: center;
       align-items: center;
-      z-index: 1000; /* Ensure it sits above other content */
+      z-index: 1000;
     }
-  
+
     .loader {
       text-align: center;
       font-size: 1.5em;
       color: #333;
     }
-  
+
     .loader .spinner {
       margin: 0 auto;
-      border: 8px solid #f3f3f3; /* Light grey */
-      border-top: 8px solid #3498db; /* Blue */
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      animation: spin 1s linear infinite; /* Spinning animation */
+      animation: spin 1s linear infinite;
     }
-  
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-  
+
     .green-tick {
-      display: none; /* Initially hidden */
+      display: none;
       color: green;
-      font-size: 2em; /* Make the tick larger */
-    }
-  
-    .visible {
-      display: inline; /* Show when visible */
-    }
-  
-    #loadingText {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #555; /* Darker text color */
+      font-size: 2em;
     }
 
     .visible {
-      display: inline; /* Show when visible */
+      display: inline;
     }
 
-    #pdfIframe {
-      width: 100%; /* Full width */
-      height: 400px; /* Fixed height */
-      border: none; /* Remove default border */
-      overflow: hidden; /* Prevent overflow */
+    .input-container {
+      margin-top: 20px;
     }
 
-    /* Responsive Design */
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 1.8em;
-      }
-
-      .upload-container {
-        flex-direction: column;
-      }
-
-      .upload-btn, .scan-btn {
-        width: 100%;
-        margin-bottom: 10px;
-      }
-
-      .scan-btn {
-        margin-top: 0;
-      }
+    .input-box {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: calc(100% - 22px);
+      margin-bottom: 20px;
     }
+
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Resume Checker</h1>
-    <div class="upload-container">
-      <input type="file" id="resumeUpload" class="upload-btn">
-      <button class="scan-btn" id="scanResumeBtn">Scan</button>
-    </div>
+    <h1>Check Resume with Job Description</h1>
     
-    <div class="preview-container" id="previewContainer">
-      <img id="previewImage" style="display:none; width: 100%; height: auto;" alt="Preview" />
-      <iframe id="pdfIframe" style="display:none;" frameborder="0"></iframe>
-      <div class="preview-message" id="previewMessage">Upload a file to see the preview here.</div>
-    </div>
-
-    <div id="loadingScreen">
-      <div class="loader">
-        <div class="spinner"></div> <!-- Spinner for loading animation -->
-        <div id="loadingText"></div>
-        <div class="green-tick" id="tick"><i class="fas fa-check-circle"></i></div>
+    <div class="upload-container">
+      <input type="file" id="jobResumeUpload" class="upload-btn">
+      <div id="jobResumePreview" class="preview">
+        <div class="preview-content">
+          <p class="no-file-message" id="jobPreviewMessage">No file uploaded yet.</p>
+          <img id="jobPreviewImage" style="display:none; width: 100%; height: auto;" alt="Preview" />
+          <iframe id="jobPdfIframe" style="display:none;" frameborder="0"></iframe>
+        </div>
       </div>
     </div>
+
+    <div class="input-container">
+      <input type="text" id="jobDescriptionInput" placeholder="Enter Job Description" class="input-box">
+      <button class="scan-btn" id="scanJobDescBtn">Scan</button>
+    </div>
+  </div>
+
+  <div id="loadingScreen">
+    <div class="loader">
+      <div class="spinner"></div>
+      <div id="loadingText"></div>
+      <div class="green-tick" id="tick"><i class="fas fa-check-circle"></i></div>
+    </div>
+  </div>
 
   <script>
     async function showLoader() {
       const loadingScreen = document.getElementById('loadingScreen');
-      loadingScreen.style.display = 'flex'; // Use flex to center content
+      loadingScreen.style.display = 'flex';
     
       const loadingMessages = ['Processing...', 'Analyzing...', 'Almost done...'];
       let i = 0;
@@ -219,7 +193,7 @@
           if (i === loadingMessages.length) {
             clearInterval(interval);
             setTimeout(() => {
-              loadingScreen.style.display = 'none'; // Hide loader
+              loadingScreen.style.display = 'none';
               resolve();
             }, 1500);
           }
@@ -227,11 +201,11 @@
       });
     }
 
-    document.getElementById('resumeUpload').addEventListener('change', function() {
+    document.getElementById('jobResumeUpload').addEventListener('change', function() {
       const file = this.files[0];
-      const previewMessage = document.getElementById('previewMessage');
-      const previewImage = document.getElementById('previewImage');
-      const pdfIframe = document.getElementById('pdfIframe');
+      const previewMessage = document.getElementById('jobPreviewMessage');
+      const previewImage = document.getElementById('jobPreviewImage');
+      const pdfIframe = document.getElementById('jobPdfIframe');
 
       // Reset visibility
       previewImage.style.display = 'none';
@@ -243,36 +217,42 @@
         if (fileType.startsWith('image/')) {
           const reader = new FileReader();
           reader.onload = function(e) {
-            previewImage.src = e.target.result; // Set image source
-            previewImage.style.display = 'block'; // Show the image
-            previewMessage.style.display = 'none'; // Hide the message
+            previewImage.src = e.target.result;
+            previewImage.style.display = 'block';
+            previewMessage.style.display = 'none';
           };
-          reader.readAsDataURL(file); // Read the file as data URL
+          reader.readAsDataURL(file);
 
         } else if (fileType === 'application/pdf') {
           const reader = new FileReader();
           reader.onload = function(e) {
             const typedArray = new Uint8Array(e.target.result);
             pdfIframe.src = URL.createObjectURL(new Blob([typedArray], { type: 'application/pdf' }));
-            pdfIframe.style.display = 'block'; // Show the iframe
-            previewMessage.style.display = 'none'; // Hide the message
+            pdfIframe.style.display = 'block';
+            previewMessage.style.display = 'none';
           };
-          reader.readAsArrayBuffer(file); // Read the PDF file as ArrayBuffer
+          reader.readAsArrayBuffer(file);
 
         } else {
           previewMessage.innerText = "File type not supported for preview.";
         }
       } else {
-        previewMessage.innerText = "Upload a file to see the preview here.";
+        previewMessage.innerText = "No file uploaded yet.";
       }
     });
 
-    document.getElementById('scanResumeBtn').addEventListener('click', async () => {
-      const fileInput = document.getElementById('resumeUpload');
+    document.getElementById('scanJobDescBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('jobResumeUpload');
       const file = fileInput.files[0];
+      const jobDescription = document.getElementById('jobDescriptionInput').value.trim();
 
       if (!file) {
         alert('Please upload a resume file first!');
+        return;
+      }
+      
+      if (!jobDescription) {
+        alert('Please enter the job description!');
         return;
       }
 
@@ -280,16 +260,17 @@
 
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('job_description', jobDescription); // Add job description to the form data
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/process_resume/', {
+        const response = await fetch('http://127.0.0.1:8000/process_resume_and_job/score', {
           method: 'POST',
           body: formData
         });
 
         if (response.ok) {
           const data = await response.json();
-          window.location.href = `result_display.html?data=${encodeURIComponent(JSON.stringify(data))}`;
+          window.location.href = `result_score.html?data=${encodeURIComponent(JSON.stringify(data))}`;
         } else {
           document.getElementById('loadingText').textContent = 'Error processing resume!';
         }

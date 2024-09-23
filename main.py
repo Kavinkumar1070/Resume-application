@@ -52,13 +52,10 @@ async def upload_resume(file: UploadFile = File(...)):
 @app.post("/process_resume/")
 async def process_resume(file: UploadFile = File(...)):
     text = pdf_to_text(file.file)
-    result = get_groq_response(text, Basic_details)
+    input_prompt = "Please analyze the following resume text."
+    result = get_groq_response(text, input_prompt)
 
-    details = result
-    encoded_details = urllib.parse.quote(details)  # URL-encode the details
-    return RedirectResponse(url=f"/result?details={encoded_details}")
-
-# Endpoint 2: Input resume text and job description, strength,weakness
+    return {"details": result}# Endpoint 2: Input resume text and job description, strength,weakness
 @app.post("/process_resume_and_job/")
 async def process_resume_and_job(file: UploadFile = File(...),job_description: str = Form(None)):
     text = pdf_to_text(file.file)

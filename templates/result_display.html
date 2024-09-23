@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan Result</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f1f1f5;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding-top: 60px;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      max-width: 1100px;
+      width: 90%;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .container:hover {
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      font-size: 26px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      font-size: 22px;
+      color: #444;
+      margin-bottom: 15px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    h4 {
+      font-size: 20px;
+      color: #666;
+      margin: 10px 0;
+      text-align: left;
+    }
+
+    pre {
+      background-color: #f9f9fb;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #555;
+      text-align: left;
+      white-space: pre-wrap;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+      padding: 14px 30px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #analysisContainer {
+      margin-bottom: 20px;
+      padding: 30px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #fdfdfd;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      text-align: left;
+    }
+
+    /* Larger desktop styles */
+    @media (min-width: 1200px) {
+      h2 {
+        font-size: 28px;
+      }
+
+      h3 {
+        font-size: 24px;
+      }
+
+      h4 {
+        font-size: 22px;
+      }
+
+      pre {
+        font-size: 18px;
+        padding: 20px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 14px 32px;
+      }
+    }
+
+    /* Tablet breakpoint */
+    @media (max-width: 1024px) {
+      h2 {
+        font-size: 24px;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      h4 {
+        font-size: 18px;
+      }
+
+      pre {
+        font-size: 15px;
+        padding: 15px;
+      }
+
+      .container {
+        padding: 25px;
+      }
+
+      button {
+        font-size: 15px;
+        padding: 12px 20px;
+      }
+    }
+
+    /* Mobile breakpoint */
+    @media (max-width: 768px) {
+      body {
+        padding-top: 40px;
+      }
+
+      .container {
+        padding: 20px;
+        margin: 0 15px;
+        width: 95%;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      h3 {
+        font-size: 18px;
+      }
+
+      h4 {
+        font-size: 16px;
+      }
+
+      pre {
+        font-size: 14px;
+        padding: 12px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px 16px;
+      }
+    }
+
+    /* Small mobile screens */
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      h4 {
+        font-size: 14px;
+      }
+
+      pre {
+        font-size: 13px;
+        padding: 10px;
+      }
+
+      button {
+        font-size: 13px;
+        padding: 8px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Scan Result</h2>
+    <div id="analysisContainer">
+      <h3>Analysis Details</h3>
+      <h4>Strengths:</h4>
+      <pre id="strengths"></pre>
+      <h4>Weaknesses:</h4>
+      <pre id="weaknesses"></pre>
+      <h4>Suggestions:</h4>
+      <pre id="suggestions"></pre>
+      <div id="overallSection">
+        <h4>Overall:</h4>
+        <pre id="overall"></pre>
+      </div>
+    </div>
+    <button id="backButton">Back</button>
+  </div>
+
+  <script>
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    window.onload = () => {
+      const dataParam = getQueryParam('data');
+      
+      if (!dataParam) {
+        document.getElementById('analysisContainer').innerHTML = '<p>Error: No data available.</p>';
+        return;
+      }
+
+      try {
+        const data = JSON.parse(decodeURIComponent(dataParam));
+        const details = data.details.split('**');
+
+        document.getElementById('strengths').textContent = details[2] ? details[2].trim() : 'No strengths found.';
+        document.getElementById('weaknesses').textContent = details[4] ? details[4].trim() : 'No weaknesses found.';
+        document.getElementById('suggestions').textContent = details[6] ? details[6].trim() : 'No suggestions found.';
+        document.getElementById('overall').textContent = details[8] ? details[8].trim() : 'No overall analysis found.';
+      } catch (error) {
+        console.error('Error parsing data:', error);
+        document.getElementById('analysisContainer').innerHTML = '<p>Error: Unable to parse data.</p>';
+      }
+    };
+
+    document.getElementById('backButton').addEventListener('click', () => {
+      window.history.back(); // Navigate back to the previous page
+    });
+  </script>
+</body>
+</html>

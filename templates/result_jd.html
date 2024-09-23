@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Check Results</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+  
+      .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+      }
+  
+      h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+  
+      h2 {
+        font-size: 1.75rem;
+        color: #34495e;
+        margin-top: 30px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+  
+      p {
+        line-height: 1.6;
+        color: #555;
+      }
+  
+      .strengths,
+      .weaknesses,
+      .keywords,
+      .final-thoughts {
+        margin-bottom: 40px;
+      }
+  
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+  
+      ul li {
+        padding: 10px 0;
+        font-size: 1.1rem;
+      }
+  
+      ul li:before {
+        content: '\2022';
+        color: #3498db;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+  
+      .keywords ul li:before {
+        content: '\1F4D6';
+      }
+  
+      .raw-data {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+  
+      .filename {
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #27ae60;
+      }
+  
+      .action-buttons {
+        text-align: center;
+        margin-top: 30px;
+      }
+  
+      .action-buttons button {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+  
+      .action-buttons button:hover {
+        background-color: #2980b9;
+      }
+  
+      .highlight {
+        font-weight: bold;
+        color: #2980b9;
+      }
+  
+      .info-box {
+        border-left: 4px solid #27ae60;
+        background-color: #ecf9f0;
+        padding: 15px;
+        margin: 20px 0;
+        font-size: 1.1rem;
+        border-radius: 5px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Resume Check Results</h1>
+
+    <div id="resultContainer"></div>
+  </div>
+
+  <script>
+    function displayResults(data) {
+        const container = document.getElementById('resultContainer');
+        
+        // Parse the result string into different sections
+        const resultText = data.result;
+        const sections = resultText.split('\n\n');
+      
+        sections.forEach(section => {
+          const sectionDiv = document.createElement('div');
+          sectionDiv.classList.add('section');
+      
+          // Replace Markdown bold with HTML strong tags
+          section = section.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      
+          // Check if the section is for Strengths, Weaknesses, Missing Keywords, or Final Thoughts
+          if (section.includes("Strengths:")) {
+            sectionDiv.innerHTML = '<h2>Strengths</h2>' + formatSectionList(section);
+          } else if (section.includes("Weaknesses:")) {
+            sectionDiv.innerHTML = '<h2>Weaknesses</h2>' + formatSectionList(section);
+          } else if (section.includes("Missing keywords:")) {
+            sectionDiv.innerHTML = '<h2>Missing Keywords</h2>' + formatSectionList(section);
+          } else if (section.includes("Final thoughts:")) {
+            sectionDiv.innerHTML = '<h2>Final Thoughts</h2><p>' + section.split('Final thoughts:')[1].trim() + '</p>';
+          } else {
+            // For the general evaluation text (Alignment with the role)
+            sectionDiv.innerHTML = '<p>' + section + '</p>';
+          }
+      
+          container.appendChild(sectionDiv);
+        });
+      }
+
+    // Function to convert numbered or bulleted lists into HTML <ul> elements
+    function formatSectionList(sectionText) {
+      const listItems = sectionText.split('\n').slice(1).map(item => '<li>' + item.trim() + '</li>').join('');
+      return '<ul>' + listItems + '</ul>';
+    }
+
+    // Parse URL parameters to extract the JSON data
+    const urlParams = new URLSearchParams(window.location.search);
+    const data = JSON.parse(decodeURIComponent(urlParams.get('data')));
+
+    // Call displayResults to render the data on the page
+    displayResults(data);
+  </script>
+</body>
+</html>
