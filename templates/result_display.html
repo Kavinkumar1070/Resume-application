@@ -3,270 +3,202 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scan Result</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+  <title>Resume Scan Results</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
       margin: 0;
       padding: 0;
-      background-color: #f1f1f5;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding-top: 60px;
+      transition: background-color 0.3s ease;
     }
-    
+
     .container {
-      background-color: white;
-      border-radius: 10px;
-      padding: 40px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      max-width: 1100px;
-      width: 90%;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .container:hover {
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    h2 {
-      font-size: 26px;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    h3 {
-      font-size: 22px;
-      color: #444;
-      margin-bottom: 15px;
-      text-align: left;
-      font-weight: 600;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
-    }
-
-    h4 {
-      font-size: 20px;
-      color: #666;
-      margin: 10px 0;
-      text-align: left;
-    }
-
-    pre {
-      background-color: #f9f9fb;
-      padding: 15px;
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: #fff;
       border-radius: 8px;
-      font-size: 16px;
-      color: #555;
-      text-align: left;
-      white-space: pre-wrap;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      line-height: 1.8;
+      animation: fadeIn 0.5s ease;
     }
 
-    button {
-      padding: 14px 30px;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-section {
+      margin-bottom: 40px;
+      padding: 15px;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      transition: transform 0.3s;
+    }
+
+    .result-section:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .key {
+      font-size: 1.5rem;
+      color: #34495e;
+      margin: 0;
+      margin-bottom: 10px;
+      font-weight: bold; /* Make key bold */
+    }
+
+    .value {
+      font-size: 1rem;
+      color: #555;
+      margin-left: 20px;
+      margin-bottom: 5px; /* Indentation for values */
+      margin-top: 5px; /* Space above value */
+      white-space: pre-line;
+    }
+
+    .action-buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .action-buttons button {
       background-color: #3498db;
       color: white;
+      padding: 12px 24px;
+      font-size: 1.1rem;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    button:hover {
+    .action-buttons button::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.6s ease;
+      z-index: 0;
+    }
+
+    .action-buttons button:hover::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .action-buttons button:hover {
       background-color: #2980b9;
       transform: translateY(-2px);
     }
 
-    button:active {
-      transform: translateY(0);
-    }
-
-    #analysisContainer {
-      margin-bottom: 20px;
-      padding: 30px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background-color: #fdfdfd;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-      text-align: left;
-    }
-
-    /* Larger desktop styles */
-    @media (min-width: 1200px) {
-      h2 {
-        font-size: 28px;
-      }
-
-      h3 {
-        font-size: 24px;
-      }
-
-      h4 {
-        font-size: 22px;
-      }
-
-      pre {
-        font-size: 18px;
-        padding: 20px;
-      }
-
-      button {
-        font-size: 18px;
-        padding: 14px 32px;
-      }
-    }
-
-    /* Tablet breakpoint */
-    @media (max-width: 1024px) {
-      h2 {
-        font-size: 24px;
-      }
-
-      h3 {
-        font-size: 20px;
-      }
-
-      h4 {
-        font-size: 18px;
-      }
-
-      pre {
-        font-size: 15px;
-        padding: 15px;
-      }
-
-      .container {
-        padding: 25px;
-      }
-
-      button {
-        font-size: 15px;
-        padding: 12px 20px;
-      }
-    }
-
-    /* Mobile breakpoint */
-    @media (max-width: 768px) {
-      body {
-        padding-top: 40px;
-      }
-
-      .container {
-        padding: 20px;
-        margin: 0 15px;
-        width: 95%;
-      }
-
-      h2 {
-        font-size: 22px;
-      }
-
-      h3 {
-        font-size: 18px;
-      }
-
-      h4 {
-        font-size: 16px;
-      }
-
-      pre {
-        font-size: 14px;
-        padding: 12px;
-      }
-
-      button {
-        font-size: 14px;
-        padding: 10px 16px;
-      }
-    }
-
-    /* Small mobile screens */
-    @media (max-width: 480px) {
-      .container {
-        padding: 15px;
-      }
-
-      h2 {
-        font-size: 20px;
-      }
-
-      h3 {
-        font-size: 16px;
-      }
-
-      h4 {
-        font-size: 14px;
-      }
-
-      pre {
-        font-size: 13px;
-        padding: 10px;
-      }
-
-      button {
-        font-size: 13px;
-        padding: 8px 14px;
-      }
+    .action-buttons button:focus {
+      outline: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Scan Result</h2>
-    <div id="analysisContainer">
-      <h3>Analysis Details</h3>
-      <h4>Strengths:</h4>
-      <pre id="strengths"></pre>
-      <h4>Weaknesses:</h4>
-      <pre id="weaknesses"></pre>
-      <h4>Suggestions:</h4>
-      <pre id="suggestions"></pre>
-      <div id="overallSection">
-        <h4>Overall:</h4>
-        <pre id="overall"></pre>
-      </div>
+    <h1>Resume Scan Results</h1>
+    <div id="resultContainer"></div>
+    <div class="action-buttons">
+      <button class="exit-btn" onclick="window.location.href='index.html'">Exit</button>
     </div>
-    <button id="backButton">Back</button>
   </div>
 
   <script>
-    function getQueryParam(param) {
+    // Function to parse the resume data from the URL
+    function getResumeData() {
       const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+      const resumeData = urlParams.get('resumeData');
+      return JSON.parse(decodeURIComponent(resumeData));
     }
 
-    window.onload = () => {
-      const dataParam = getQueryParam('data');
-      
-      if (!dataParam) {
-        document.getElementById('analysisContainer').innerHTML = '<p>Error: No data available.</p>';
-        return;
+    // Function to create a section element with heading and content
+    function createSection(key, content) {
+      const section = document.createElement('div');
+      section.classList.add('result-section');
+
+      const heading = document.createElement('h2');
+      heading.classList.add('key');
+      heading.textContent = key;
+
+      const paragraph = document.createElement('p');
+      paragraph.classList.add('value');
+      paragraph.innerHTML = content || 'Not mentioned';
+
+      section.appendChild(heading);
+      section.appendChild(paragraph);
+      return section;
+    }
+
+    // Function to format array data into a readable string with indentation
+    function formatArrayData(array, indentLevel = 1) {
+      return array.map(item => {
+        return Object.entries(item)
+          .map(([innerKey, innerValue]) => `${'&nbsp;'.repeat(indentLevel * 4)}<strong>${innerKey}:</strong> ${innerValue || 'Not mentioned'}`) // Dynamic indentation and bold keys
+          .join('<br>'); // Use <br> for new lines
+      }).join('<br><br>');
+    }
+
+    // Function to display the parsed data dynamically
+    function displayResumeData(data, indentLevel = 0) {
+      const resultContainer = document.getElementById('resultContainer');
+      resultContainer.innerHTML = ''; // Clear the container first
+
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          const value = data[key];
+
+          // Indentation for keys
+          const currentIndent = '&nbsp;'.repeat(indentLevel * 4);
+
+          // If the value is an object, iterate through its properties
+          if (typeof value === 'object' && value !== null) {
+            if (Array.isArray(value)) {
+              // Handle array data (like Education and Employment details)
+              const innerContent = formatArrayData(value, indentLevel + 1);
+              resultContainer.appendChild(createSection(`${currentIndent}${key}`, innerContent));
+            } else {
+              // Handle normal object (like Resume Parsing)
+              const innerContent = Object.entries(value)
+                .map(([innerKey, innerValue]) => {
+                  if (Array.isArray(innerValue)) {
+                    return `${currentIndent}<strong>${innerKey}:</strong><br>${formatArrayData(innerValue, indentLevel + 1)}`;
+                  }
+                  return `${currentIndent}<strong>${innerKey}:</strong> ${innerValue || 'Not mentioned'}`;
+                })
+                .join('<br>');
+              resultContainer.appendChild(createSection(`${currentIndent}${key}`, innerContent));
+            }
+          } else {
+            resultContainer.appendChild(createSection(`${currentIndent}${key}`, value));
+          }
+        }
       }
+    }
 
-      try {
-        const data = JSON.parse(decodeURIComponent(dataParam));
-        const details = data.details.split('**');
-
-        document.getElementById('strengths').textContent = details[2] ? details[2].trim() : 'No strengths found.';
-        document.getElementById('weaknesses').textContent = details[4] ? details[4].trim() : 'No weaknesses found.';
-        document.getElementById('suggestions').textContent = details[6] ? details[6].trim() : 'No suggestions found.';
-        document.getElementById('overall').textContent = details[8] ? details[8].trim() : 'No overall analysis found.';
-      } catch (error) {
-        console.error('Error parsing data:', error);
-        document.getElementById('analysisContainer').innerHTML = '<p>Error: Unable to parse data.</p>';
-      }
-    };
-
-    document.getElementById('backButton').addEventListener('click', () => {
-      window.history.back(); // Navigate back to the previous page
-    });
+    // Get and display resume data when the page loads
+    const resumeData = getResumeData();
+    displayResumeData(resumeData);
   </script>
 </body>
 </html>

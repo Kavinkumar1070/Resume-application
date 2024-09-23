@@ -270,26 +270,32 @@
     document.getElementById('scanResumeBtn').addEventListener('click', async () => {
       const fileInput = document.getElementById('resumeUpload');
       const file = fileInput.files[0];
-
+    
       if (!file) {
         alert('Please upload a resume file first!');
         return;
       }
-
+    
       await showLoader();
-
+    
       const formData = new FormData();
       formData.append('file', file);
-
+    
       try {
         const response = await fetch('http://127.0.0.1:8000/process_resume/', {
           method: 'POST',
           body: formData
         });
-
+    
         if (response.ok) {
           const data = await response.json();
-          window.location.href = `result_display.html?data=${encodeURIComponent(JSON.stringify(data))}`;
+    
+          // Prepare the query parameters to pass to the result_display.html page
+          const params = new URLSearchParams();
+          params.append('resumeData', encodeURIComponent(JSON.stringify(data)));
+    
+          // Redirect to result display page with the API response data
+          window.location.href = `result_display.html?${params.toString()}`;
         } else {
           document.getElementById('loadingText').textContent = 'Error processing resume!';
         }
@@ -298,6 +304,7 @@
         document.getElementById('loadingText').textContent = 'An error occurred!';
       }
     });
+    
   </script>
 </body>
 </html>

@@ -11,6 +11,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 import urllib.parse
+import json
 from fastapi.responses import RedirectResponse
 
 app = FastAPI()
@@ -48,13 +49,28 @@ async def upload_resume(file: UploadFile = File(...)):
     return {"error": "Unsupported file format"}
 
 
-# Endpoint 1: Input resume text and get a response
 @app.post("/process_resume/")
 async def process_resume(file: UploadFile = File(...)):
-    text = pdf_to_text(file.file)
-    result = get_groq_response(text, Basic_details)
+    try:
+        text = pdf_to_text(file.file)
+        result = get_groq_response(text, Basic_details)
 
-    return {"details": result}# Endpoint 2: Input resume text and job description, strength,weakness
+        # Return the result as JSON response
+        if isinstance(result, dict):
+            return JSONResponse(content=result)
+        
+        parsed_result = json.loads(result)
+        return parsed_result
+
+    except json.JSONDecodeError as e:
+        print(f"JSONDecodeError: {e}")
+        return JSONResponse(content={"error": "Invalid JSON response", "details": str(e)}, status_code=500)
+
+    except Exception as e:
+        print(f"Exception: {e}")
+        return JSONResponse(content={"error": "An error occurred", "details": str(e)}, status_code=500)
+
+
 @app.post("/process_resume_and_job/")
 async def process_resume_and_job(file: UploadFile = File(...),job_description: str = Form(None)):
     text = pdf_to_text(file.file)
