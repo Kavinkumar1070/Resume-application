@@ -47,6 +47,18 @@ You are an AI bot designed to act as a professional for Resume Processing. You h
    - Certificates
    
 Return only the requested information for each task, without any additional explanations.
+in json format like {{"Resume Classification":"information",
+                       Job Recommendation:"information",
+                       "Resume Parsing": {
+                            "Full name":"information",
+                            "Email ID":"information",
+                            "GitHub portfolio":"information",
+                            "LinkedIn ID":"information",
+                            "Employment details":"information",
+                            "Technical skills":"information",
+                            "Soft skills":"information",
+                            "Certificates":"information"
+                       }}}
 """
 strength_weakness = """
     You are an experienced Technical Human Resource Manager with tech experience in roles like Data Science, Full Stack Web Development,
@@ -63,30 +75,6 @@ ats_scoring = """
 """
 
     
-# # Resume processing
-# def get_groq_response(resume_data, input_prompt):
-#     client = Groq(api_key="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")
-#     response = client.chat.completions.create(
-#         model="llama3-8b-8192",
-#         messages=[
-#             {"role": "system", "content": input_prompt},
-#             {"role": "user", "content": resume_data}
-#         ],
-#         temperature=0.2
-#     )   
-#     response_text = response.choices[0].message.content
-#     json_start_idx = response_text.find("{")
-#     json_end_idx = response_text.rfind("}") + 1
-#     result = response_text[json_start_idx:json_end_idx]
-#     print(result)
-#     print("****************")
-#     result = json.loads(result)
-#     print(result)
-#     print("****************")
-    
-#     return result
-
-    
 # Resume processing
 def get_groq_response(resume_data, input_prompt):
     client = Groq(api_key="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")
@@ -99,7 +87,32 @@ def get_groq_response(resume_data, input_prompt):
         temperature=0.2
     )   
     response_text = response.choices[0].message.content
-    return response_text
+    json_start_idx = response_text.find("{")
+    json_end_idx = response_text.rfind("}") + 1
+    result = response_text[json_start_idx:json_end_idx]
+    print(result)
+    print("****************")
+    result = json.loads(result)
+    print(result)
+    print("****************")
+    
+    return result
+
+    
+# # Resume processing
+# def get_groq_response(resume_data, input_prompt):
+#     client = Groq(api_key="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")
+#     response = client.chat.completions.create(
+#         model="llama3-8b-8192",
+#         messages=[
+#             {"role": "system", "content": input_prompt},
+#             {"role": "user", "content": resume_data}
+#         ],
+#         temperature=0.2
+#     )   
+#     response_text = response.choices[0].message.content
+#     return response_text
+
 # Resume processing
 def get_groq_response1(resume_data, input_prompt):
     client = Groq(api_key="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")
