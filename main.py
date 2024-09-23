@@ -52,7 +52,6 @@ async def upload_resume(file: UploadFile = File(...)):
 @app.post("/process_resume/")
 async def process_resume(file: UploadFile = File(...)):
     text = pdf_to_text(file.file)
-    input_prompt = "Please analyze the following resume text."
     result = get_groq_response(text, Basic_details)
 
     return {"details": result}# Endpoint 2: Input resume text and job description, strength,weakness
